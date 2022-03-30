@@ -32,16 +32,18 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'users.apps.UsersConfig',
-    'recipes.apps.RecipesConfig',
-    'api.apps.ApiConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'rest_framework',
+    'rest_framework.authtoken',
+    'djoser',
+    'users.apps.UsersConfig',
+    'recipes.apps.RecipesConfig',
+    'api.apps.ApiConfig',
 ]
 
 MIDDLEWARE = [
@@ -131,23 +133,34 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # AUTH_USER_MODEL = '.User'
 
 REST_FRAMEWORK = {
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend'
+        ],
+
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+
+    'DEFAULT_PAGINATION_CLASS': [
+        'rest_framework.pagination.PageNumberPagination',
+    ],
+
     'PAGE_SIZE': 15
 }
 
-PAGE_SIZE = 10
+# PAGE_SIZE = 10
 
-AUTHENTICATION_BACKENDS = ['api.backends.ConfirmationCodeAuthBackend',
-                           'django.contrib.auth.backends.ModelBackend']
+# AUTHENTICATION_BACKENDS = ['api.backends.ConfirmationCodeAuthBackend',
+#                            'django.contrib.auth.backends.ModelBackend']
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=5),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=33),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=6),
+    'AUTH_HEADER_TYPES': ('Authorization: Token TOKENVALUE',),
 }
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
@@ -158,5 +171,19 @@ ADMIN_EMAIL = 'admin@foodgram.ru'
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
+
+DJOSER = {
+    'LOGIN_FIELD': 'email',  # регистрация не с username а email
+    # 'HIDE_USERS': False,
+    'SERIALIZERS': {
+        # 'user_create': 'users.serializers.CustomUserCreateSerializer',
+        'user': 'users.serializers.CustomUserSerializer',
+        'current_user': 'users.serializers.CustomUserSerializer',
+    },
+    'PERMISSIONS': {
+        'user': ('rest_framework.permissions.IsAuthenticated',),
+        'user_list': ('rest_framework.permissions.AllowAny',)
     }
 }
