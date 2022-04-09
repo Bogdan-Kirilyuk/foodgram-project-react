@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'api',
     'users',
     'recipes',
+    'sorl.thumbnail',
 ]
 
 MIDDLEWARE = [
@@ -144,23 +145,6 @@ REST_FRAMEWORK = {
 
     'PAGE_SIZE': 6
 }
-
-# PAGE_SIZE = 10
-
-# AUTHENTICATION_BACKENDS = ['api.backends.ConfirmationCodeAuthBackend',
-#                            'django.contrib.auth.backends.ModelBackend']
-
-# SIMPLE_JWT = {
-#     'ACCESS_TOKEN_LIFETIME': timedelta(days=33),
-#     'REFRESH_TOKEN_LIFETIME': timedelta(days=6),
-#     'AUTH_HEADER_TYPES': ('Authorization: Token TOKENVALUE',),
-# }
-
-# SIMPLE_JWT = {
-#     # Устанавливаем срок жизни токена
-#     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-#     'AUTH_HEADER_TYPES': ('Bearer',),
-# }
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')

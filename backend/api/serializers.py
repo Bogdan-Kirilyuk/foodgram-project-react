@@ -5,8 +5,6 @@ from rest_framework import serializers
 from recipes.models import (CustomUser, Favorite, Follow, Ingredient,
                             IngredientInRecipe, Recipe, ShoppingList, Tag)
 
-# BASE_URL = 'http://127.0.0.1'
-
 
 class TagSerializer(serializers.ModelSerializer):
 

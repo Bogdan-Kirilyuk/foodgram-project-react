@@ -35,7 +35,7 @@ class Ingredient(models.Model):
 
     name = models.CharField(
         max_length=200,
-        # unique=True,
+        unique=True,
         verbose_name='Название ингредиента'
     )
     measurement_unit = models.CharField(
@@ -57,7 +57,7 @@ class Recipe(models.Model):
         related_name='recipes', verbose_name='Автор рецепта')
     name = models.CharField(max_length=200, verbose_name='Название рецепта')
     image = models.ImageField(
-        verbose_name="Фото блюда", upload_to='recipes')
+        verbose_name="Фото блюда", upload_to='recipes/')
     text = models.TextField(verbose_name='Описание рецепта')
     ingredients = models.ManyToManyField(
         Ingredient,

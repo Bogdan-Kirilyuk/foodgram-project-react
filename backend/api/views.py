@@ -17,8 +17,7 @@ from .paginators import PageNumberPaginatorModified
 from .permissions import AdminOrAuthorOrReadOnly
 from .serializers import (AddFavouriteRecipeSerializer, CreateRecipeSerializer,
                           IngredientSerializer, ListRecipeSerializer,
-                          ShowFollowersSerializer, TagSerializer,
-                          UserSerializer)
+                          ShowFollowersSerializer, TagSerializer)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
