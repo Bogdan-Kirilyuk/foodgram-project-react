@@ -70,7 +70,7 @@ def showfollows(request):
 class FollowViewSet(APIView):
     permission_classes = (IsAuthenticated, )
 
-    def get(self, request, user_id):
+    def post(self, request, user_id):
         user = request.user
         author = get_object_or_404(CustomUser, id=user_id)
         if Follow.objects.filter(user=user, author=author).exists():
@@ -78,7 +78,7 @@ class FollowViewSet(APIView):
                 'Вы уже подписаны',
                 status=status.HTTP_400_BAD_REQUEST)
         Follow.objects.create(user=user, author=author)
-        serializer = UserSerializer(author)
+        serializer = ShowFollowersSerializer(author)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def delete(self, request, user_id):
@@ -91,14 +91,14 @@ class FollowViewSet(APIView):
 
 
 class FavouriteViewSet(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
-    def get(self, request, recipe_id):
+    def post(self, request, recipe_id):
         user = request.user
         recipe = get_object_or_404(Recipe, id=recipe_id)
         if Favorite.objects.filter(user=user, recipe=recipe).exists():
             return Response(
-                'Вы уже добавили рецепт в избранное',
+                'Рецепт уже добавлен в избранное',
                 status=status.HTTP_400_BAD_REQUEST)
         Favorite.objects.create(user=user, recipe=recipe)
         serializer = AddFavouriteRecipeSerializer(recipe)
@@ -122,12 +122,12 @@ class FavouriteViewSet(APIView):
 class ShoppingListViewSet(APIView):
     permission_classes = (IsAuthenticated, )
 
-    def get(self, request, recipe_id):
+    def post(self, request, recipe_id):
         user = request.user
         recipe = get_object_or_404(Recipe, id=recipe_id)
         if ShoppingList.objects.filter(user=user, recipe=recipe).exists():
             return Response(
-                'Вы уже добавили рецепт в список покупок',
+                'Рецепт уже в список покупок',
                 status=status.HTTP_400_BAD_REQUEST)
         ShoppingList.objects.create(user=user, recipe=recipe)
         serializer = AddFavouriteRecipeSerializer(recipe)

@@ -9,7 +9,7 @@ class AdminOrAuthorOrReadOnly(permissions.BasePermission):
         return True
 
     def has_object_permission(self, request, view, obj):
-        if (request.method in ['PUT', 'PATCH', 'DELETE']
+        if (request.method in ['PATCH', 'DELETE']
                 and not request.user.is_anonymous):
             return (
                 request.user == obj.author

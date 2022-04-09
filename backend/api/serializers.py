@@ -5,7 +5,7 @@ from rest_framework import serializers
 from recipes.models import (CustomUser, Favorite, Follow, Ingredient,
                             IngredientInRecipe, Recipe, ShoppingList, Tag)
 
-BASE_URL = 'http://127.0.0.1'
+# BASE_URL = 'http://127.0.0.1'
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -26,7 +26,7 @@ class FollowSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Follow
-        fields = '__all__'
+        fields = ('__all__')
 
 
 class UserSerializer(serializers.ModelSerializer):

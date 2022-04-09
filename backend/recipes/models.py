@@ -25,6 +25,7 @@ class Tag(models.Model):
     class Meta:
         ordering = ['-id']
         verbose_name = 'Тег'
+        verbose_name_plural = 'Теги'
 
     def __str__(self):
         return self.name
@@ -57,7 +58,7 @@ class Recipe(models.Model):
     name = models.CharField(max_length=200, verbose_name='Название рецепта')
     image = models.ImageField(
         verbose_name="Фото блюда", upload_to='recipes')
-    text = models.TextField(max_length=1000, verbose_name='Описание рецепта')
+    text = models.TextField(verbose_name='Описание рецепта')
     ingredients = models.ManyToManyField(
         Ingredient,
         through='IngredientInRecipe',
@@ -65,7 +66,7 @@ class Recipe(models.Model):
     )
     tags = models.ManyToManyField(
         Tag, related_name='recipes', blank=True,
-        verbose_name='Тэги рецепта')
+        verbose_name='Теги рецепта')
     pub_date = models.DateTimeField(
         'Дата добавления', auto_now_add=True, db_index=True
     )
