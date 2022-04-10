@@ -1,8 +1,9 @@
-
 import django_filters.rest_framework
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from recipes.models import (CustomUser, Favorite, Follow, Ingredient,
+                            IngredientInRecipe, Recipe, ShoppingList, Tag)
 from rest_framework import status, viewsets
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.pagination import PageNumberPagination
@@ -11,8 +12,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .filters import IngredientFilter, RecipeFilter
-from recipes.models import (CustomUser, Favorite, Follow, Ingredient,
-                            IngredientInRecipe, Recipe, ShoppingList, Tag)
 from .paginators import PageNumberPaginatorModified
 from .permissions import AdminOrAuthorOrReadOnly
 from .serializers import (AddFavouriteRecipeSerializer, CreateRecipeSerializer,
@@ -59,7 +58,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 def showfollows(request):
     user_obj = CustomUser.objects.filter(following__user=request.user)
     paginator = PageNumberPagination()
-    paginator.page_size = 10
+    paginator.page_size = 6
     result_page = paginator.paginate_queryset(user_obj, request)
     serializer = ShowFollowersSerializer(
         result_page, many=True, context={'current_user': request.user})
@@ -168,9 +167,8 @@ class DownloadShoppingCart(APIView):
                         'amount': amount
                     }
                 else:
-                    buying_list[name]['amount'] = (buying_list[name]['amount']
-                                                   + amount)
-
+                    buying_list[name]['amount'] = (
+                        buying_list[name]['amount'] + amount)
         wishlist = []
         for item in buying_list:
             wishlist.append(f'{item} - {buying_list[item]["amount"]} '

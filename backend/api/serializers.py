@@ -1,9 +1,8 @@
 from djoser.serializers import UserSerializer as BaseUserSerializer
 from drf_extra_fields.fields import Base64ImageField
-from rest_framework import serializers
-
 from recipes.models import (CustomUser, Favorite, Follow, Ingredient,
                             IngredientInRecipe, Recipe, ShoppingList, Tag)
+from rest_framework import serializers
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -145,7 +144,6 @@ class ShowFollowerRecipeSerializer(serializers.ModelSerializer):
 
 
 class ShowFollowersSerializer(serializers.ModelSerializer):
-
     recipes = ShowFollowerRecipeSerializer(many=True, read_only=True)
     recipes_count = serializers.SerializerMethodField('count_author_recipes')
     is_subscribed = serializers.SerializerMethodField('check_if_subscribed')
