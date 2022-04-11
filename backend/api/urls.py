@@ -5,7 +5,7 @@ from rest_framework.routers import DefaultRouter
 
 from .views import (DownloadShoppingCart, FavouriteViewSet, FollowViewSet,
                     IngredientViewSet, RecipesViewSet, ShoppingListViewSet,
-                    TagViewSet, showfollows)
+                    TagViewSet, show_follows)
 
 router = DefaultRouter()
 router.register('tags', TagViewSet, basename='tags')
@@ -14,7 +14,7 @@ router.register('ingredients', IngredientViewSet, basename='ingredients')
 
 urlpatterns = [
     path('users/subscriptions/',
-         showfollows, name='users_subs'),
+         show_follows, name='users_subs'),
     path('users/<int:user_id>/subscribe/',
          FollowViewSet.as_view(), name='subscribe'),
     path('recipes/<int:recipe_id>/favorite/',

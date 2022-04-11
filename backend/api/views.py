@@ -1,4 +1,5 @@
 import django_filters.rest_framework
+from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -56,7 +57,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 
 @api_view(['GET', ])
 @permission_classes([IsAuthenticated])
-def showfollows(request):
+def show_follows(request):
     user_obj = CustomUser.objects.filter(following__user=request.user)
     paginator = PageNumberPagination()
     paginator.page_size = 6
@@ -152,24 +153,28 @@ class DownloadShoppingCart(APIView):
     permission_classes = (IsAuthenticated, )
 
     def get(self, request):
-        user = request.user
-        shopping_cart = user.purchases.all()
         buying_list = {}
-        for record in shopping_cart:
-            recipe = record.recipe
-            ingredients = IngredientInRecipe.objects.filter(recipe=recipe)
-            for ingredient in ingredients:
-                amount = ingredient.amount
-                name = ingredient.ingredient.name
-                measurement_unit = ingredient.ingredient.measurement_unit
-                if name not in buying_list:
-                    buying_list[name] = {
-                        'measurement_unit': measurement_unit,
-                        'amount': amount
-                    }
-                else:
-                    buying_list[name]['amount'] = (
-                        buying_list[name]['amount'] + amount)
+        recipe_id = request.user.purchases.values_list('recipe__id')
+        ingredients = IngredientInRecipe.objects.filter(recipe__in=recipe_id)
+        ingredients = ingredients.values(
+            'ingredient',
+            'ingredient__name',
+            'ingredient__measurement_unit'
+            )
+        ingredients = ingredients.annotate(amount=Sum('amount'))
+        print(ingredients)
+        for ingredient in ingredients:
+            amount = ingredient.get('amount')
+            name = ingredient.get('ingredient__name')
+            measurement_unit = ingredient.get('ingredient__measurement_unit')
+            if name not in buying_list:
+                buying_list[name] = {
+                    'measurement_unit': measurement_unit,
+                    'amount': amount
+                }
+            else:
+                buying_list[name]['amount'] = (
+                    buying_list[name]['amount'] + amount)
         wishlist = []
         for item in buying_list:
             wishlist.append(f'{item} - {buying_list[item]["amount"]} '
