@@ -1,5 +1,4 @@
 import os
-# from datetime import timedelta
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
