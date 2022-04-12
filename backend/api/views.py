@@ -86,67 +86,54 @@ class FollowViewSet(APIView):
         author = get_object_or_404(CustomUser, id=user_id)
         follow = get_object_or_404(Follow, user=user, author=author)
         follow.delete()
-        return Response('Удалено',
-                        status=status.HTTP_204_NO_CONTENT)
+        return Response(
+            'Удалено', status=status.HTTP_204_NO_CONTENT)
 
+
+def get_post(request, recipe_id, acted_model):
+    user = request.user
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    if acted_model.objects.filter(user=user, recipe=recipe).exists():
+        return Response(
+            'Рецепт уже добавлен',
+            status=status.HTTP_400_BAD_REQUEST)
+    acted_model.objects.create(user=user, recipe=recipe)
+    serializer = AddFavouriteRecipeSerializer(recipe)
+    return Response(
+        serializer.data,
+        status=status.HTTP_201_CREATED)
+
+
+def get_delete(request, recipe_id, acted_model):
+    user = request.user
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    favorite_obj = get_object_or_404(acted_model, user=user, recipe=recipe)
+    if not favorite_obj:
+        return Response(
+            'Рецепт не был добавлен',
+            status=status.HTTP_400_BAD_REQUEST)
+    favorite_obj.delete()
+    return Response(
+        'Удалено', status=status.HTTP_204_NO_CONTENT)
 
 class FavouriteViewSet(APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, recipe_id):
-        user = request.user
-        recipe = get_object_or_404(Recipe, id=recipe_id)
-        if Favorite.objects.filter(user=user, recipe=recipe).exists():
-            return Response(
-                'Рецепт уже добавлен в избранное',
-                status=status.HTTP_400_BAD_REQUEST)
-        Favorite.objects.create(user=user, recipe=recipe)
-        serializer = AddFavouriteRecipeSerializer(recipe)
-        return Response(
-            serializer.data,
-            status=status.HTTP_201_CREATED)
+        return get_post(request, recipe_id, Favorite)
 
     def delete(self, request, recipe_id):
-        user = request.user
-        recipe = get_object_or_404(Recipe, id=recipe_id)
-        favorite_obj = get_object_or_404(Favorite, user=user, recipe=recipe)
-        if not favorite_obj:
-            return Response(
-                'Рецепт не был в избранном',
-                status=status.HTTP_400_BAD_REQUEST)
-        favorite_obj.delete()
-        return Response(
-            'Удалено', status=status.HTTP_204_NO_CONTENT)
+        return get_delete(request, recipe_id, Favorite)
 
 
 class ShoppingListViewSet(APIView):
     permission_classes = (IsAuthenticated, )
 
     def post(self, request, recipe_id):
-        user = request.user
-        recipe = get_object_or_404(Recipe, id=recipe_id)
-        if ShoppingList.objects.filter(user=user, recipe=recipe).exists():
-            return Response(
-                'Рецепт уже в список покупок',
-                status=status.HTTP_400_BAD_REQUEST)
-        ShoppingList.objects.create(user=user, recipe=recipe)
-        serializer = AddFavouriteRecipeSerializer(recipe)
-        return Response(
-            serializer.data,
-            status=status.HTTP_201_CREATED)
+        return get_post(request, recipe_id, ShoppingList)
 
     def delete(self, request, recipe_id):
-        user = request.user
-        recipe = get_object_or_404(Recipe, id=recipe_id)
-        shopping_list_obj = get_object_or_404(
-            ShoppingList, user=user, recipe=recipe)
-        if not shopping_list_obj:
-            return Response(
-                'Рецепт не был в списке покупок',
-                status=status.HTTP_400_BAD_REQUEST)
-        shopping_list_obj.delete()
-        return Response(
-            'Удалено', status=status.HTTP_204_NO_CONTENT)
+        return get_delete(request, recipe_id, ShoppingList)
 
 
 class DownloadShoppingCart(APIView):

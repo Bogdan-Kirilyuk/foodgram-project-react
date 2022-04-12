@@ -161,9 +161,9 @@ class Follow(models.Model):
 class Favorite(models.Model):
     user = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE,
-        related_name="favorite_subscriber", verbose_name='Пользователь')
+        related_name='favorite_subscriber', verbose_name='Пользователь')
     recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE, related_name="favorite_recipe",
+        Recipe, on_delete=models.CASCADE, related_name='favorite_recipe',
         verbose_name='Рецепт')
     when_added = models.DateTimeField(
         auto_now_add=True, verbose_name='Дата добавления'
