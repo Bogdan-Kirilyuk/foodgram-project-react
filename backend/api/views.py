@@ -123,15 +123,15 @@ class DownloadShoppingCart(APIView):
             'ingredient__name',
             'ingredient__measurement_unit'
             )
-        ingredients_sum_amount = ingredients.annotate(amount=Sum('amount'))
-        for ingredient in ingredients_sum_amount:
-            amount = ingredient.get('amount')
+        ingredients = ingredients.annotate(sum_amount=Sum('amount'))
+        for ingredient in ingredients:
+            sum_amount = ingredient.get('sum_amount')
             name = ingredient.get('ingredient__name')
             measurement_unit = ingredient.get('ingredient__measurement_unit')
             if name not in buying_list:
                 buying_list[name] = {
                     'measurement_unit': measurement_unit,
-                    'amount': amount
+                    'amount': sum_amount
                 }
         wishlist = []
         for item in buying_list:
