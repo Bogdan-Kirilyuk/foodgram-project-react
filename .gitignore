@@ -134,3 +134,7 @@ dmypy.json
 # папки со статикой и медиа
 backend/static/
 backend/media/
+
+#настройки среды
+.vscode
+vscode/
