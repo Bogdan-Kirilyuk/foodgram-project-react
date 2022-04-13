@@ -116,6 +116,7 @@ def get_delete(request, recipe_id, acted_model):
     return Response(
         'Удалено', status=status.HTTP_204_NO_CONTENT)
 
+
 class FavouriteViewSet(APIView):
     permission_classes = (IsAuthenticated,)
 
