@@ -161,9 +161,7 @@ class ShowFollowersSerializer(serializers.ModelSerializer):
         current_user = self.context.get('current_user')
         if user.is_anonymous:
             return False
-        if Follow.objects.filter(user=user, author=current_user).exists():
-            return True
-        return False
+        return Follow.objects.filter(user=user, author=current_user).exists()
 
 
 class ShowIngredientsSerializer(serializers.ModelSerializer):
@@ -218,7 +216,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         validated_data['ingredients'] = ingredients_data
         return validated_data
 
-    def recipe_create(self, validated_data, recipe):
+    def add_ingredient(self, validated_data, recipe):
         ingredients_data = validated_data.pop('ingredients')
         for new_ingredient in ingredients_data:
             IngredientInRecipe.objects.create(
@@ -236,12 +234,12 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         recipe.save()
         recipe.tags.set(tags_data)
         validated_data['ingredients'] = ingredients_data
-        self.recipe_create(validated_data, recipe)
+        self.add_ingredient(validated_data, recipe)
         return recipe
 
     def update(self, recipe, validated_data):
         IngredientInRecipe.objects.filter(recipe=recipe).delete()
-        self.recipe_create(validated_data, recipe)
+        self.add_ingredient(validated_data, recipe)
         return super().update(recipe, validated_data)
 
     def to_representation(self, instance):
