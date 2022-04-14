@@ -1,5 +1,4 @@
 import django_filters as filters
-from requests import request
 
 from recipes.models import Ingredient, Recipe
 from users.models import CustomUser

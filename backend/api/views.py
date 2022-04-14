@@ -122,7 +122,7 @@ class DownloadShoppingCart(APIView):
             'ingredient',
             'ingredient__name',
             'ingredient__measurement_unit'
-            )
+        )
         ingredients = ingredients.annotate(sum_amount=Sum('amount'))
         for ingredient in ingredients:
             sum_amount = ingredient.get('sum_amount')
