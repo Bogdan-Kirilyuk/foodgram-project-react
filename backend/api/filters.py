@@ -1,4 +1,4 @@
-import django_filters as filters
+from django_filters import rest_framework as filters
 
 from recipes.models import Ingredient, Recipe
 from users.models import CustomUser
@@ -13,20 +13,17 @@ class RecipeFilter(filters.FilterSet):
     is_in_shopping_cart = filters.BooleanFilter(
         method='get_is_in_shopping_cart'
     )
-    # print(is_favorited)
 
     class Meta:
         model = Recipe
         fields = ('author', 'tags')
 
     def get_is_favorited(self, queryset, name, value):
-        # print(queryset)
         if self.request.user.is_authenticated and value is True:
             return queryset.filter(favorite_recipe__user=self.request.user)
         return queryset
 
     def get_is_in_shopping_cart(self, queryset, name, value):
-        # print(self.request.user)
         user = self.request.user
         if self.request.user.is_authenticated and value is True:
             return queryset.filter(customers__user=user)
