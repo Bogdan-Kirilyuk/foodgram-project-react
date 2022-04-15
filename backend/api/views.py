@@ -131,11 +131,11 @@ class DownloadShoppingCart(APIView):
             if name not in buying_list:
                 buying_list[name] = {
                     'measurement_unit': measurement_unit,
-                    'amount': sum_amount
+                    'sum_amount': sum_amount
                 }
         wishlist = []
         for item in buying_list:
-            wishlist.append(f'{item} - {buying_list[item]["amount"]} '
+            wishlist.append(f'{item} - {buying_list[item]["sum_amount"]} '
                             f'{buying_list[item]["measurement_unit"]} \n')
         wishlist.append('\n')
         wishlist.append('FoodGram | kirilyuk.surgut@yandex.ru | 2022')
