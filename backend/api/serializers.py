@@ -133,7 +133,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
 class ShowFollowerRecipeSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(
-        max_length=None,
+        max_length=3,
         required=True,
         allow_empty_file=False,
         use_url=True,
@@ -155,7 +155,7 @@ class ShowFollowersSerializer(serializers.ModelSerializer):
                   'last_name', 'is_subscribed', 'recipes', 'recipes_count')
 
     def count_author_recipes(self, user):
-        return len(user.recipes.all())
+        return user.recipes.count()
 
     def check_if_subscribed(self, user):
         current_user = self.context.get('current_user')
