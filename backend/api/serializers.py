@@ -151,11 +151,9 @@ class ShowFollowersSerializer(serializers.ModelSerializer):
 
     def recipes_limit_followers(self, user):
         request = self.context.get('request')
-        print(request)
-        recipes_limit = int(request.GET.get('recipes_limit'))
-        print(recipes_limit)
-        if recipes_limit:
-            query = Recipe.objects.filter(author=user)[:recipes_limit]
+        if request.GET.get('recipes_limit'):
+            # recipes_limit = int(request.query_params.get('recipes_limit'))
+            query = Recipe.objects.filter(author=user)[:3]
         else:
             query = Recipe.objects.filter(author=user)
         serializer = ShowFollowerRecipeSerializer(
