@@ -133,7 +133,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
 class ShowFollowerRecipeSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(
-        max_length=3,
+        max_length=None,
         required=True,
         allow_empty_file=False,
         use_url=True,

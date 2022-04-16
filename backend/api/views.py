@@ -60,8 +60,8 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 @permission_classes([IsAuthenticated])
 def show_follows(request):
     user_obj = CustomUser.objects.filter(following__user=request.user)
-    paginator = PageNumberPagination()
-    paginator.page_size = 6
+    paginator = PageNumberPaginatorModified
+    paginator.page_size = 3
     result_page = paginator.paginate_queryset(user_obj, request)
     serializer = ShowFollowersSerializer(
         result_page, many=True, context={'current_user': request.user})
