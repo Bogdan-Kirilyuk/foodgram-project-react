@@ -140,7 +140,6 @@ class ShowFollowerRecipeSerializer(serializers.ModelSerializer):
 
 class ShowFollowersSerializer(serializers.ModelSerializer):
     recipes = serializers.SerializerMethodField('recipes_limit_followers')
-    # recipes = ShowFollowerRecipeSerializer(many=True, read_only=True)
     recipes_count = serializers.SerializerMethodField('count_author_recipes')
     is_subscribed = serializers.SerializerMethodField('check_if_subscribed')
 
@@ -152,29 +151,14 @@ class ShowFollowersSerializer(serializers.ModelSerializer):
     def recipes_limit_followers(self, user):
         request = self.context.get('request')
         if request.query_params.get('recipes_limit'):
-            # recipes_limit = int(request.query_params.get('recipes_limit'))
-            query = Recipe.objects.filter(author=user)[:3]
+            recipes_limit = int(request.query_params.get('recipes_limit'))
+            query = Recipe.objects.filter(author=user)[:recipes_limit]
         else:
             query = Recipe.objects.filter(author=user)
         serializer = ShowFollowerRecipeSerializer(
             query, read_only=True, many=True
         )
         return serializer.data
-
-    # def recipes_limit_followers(self, obj):
-    #     request = self.context.get('request')
-    #     if request.GET.get('recipe_limit'):
-    #         recipe_limit = int(request.GET.get('recipe_limit'))
-    #         print(obj.author)
-    #         queryset = Recipe.objects.filter(
-    #             author=obj.author).order_by('-pub_date')[:recipe_limit]
-    #     else:
-    #         queryset = Recipe.objects.filter(
-    #             author=obj.author).order_by('-pub_date')
-    #     serializer = ShowFollowerRecipeSerializer(
-    #         queryset, read_only=True, many=True
-    #     )
-    #     return serializer.data
 
     def count_author_recipes(self, user):
         return user.recipes.count()
