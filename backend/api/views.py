@@ -64,7 +64,9 @@ def show_follows(request):
     paginator.page_size = 6
     result_page = paginator.paginate_queryset(user_obj, request)
     serializer = ShowFollowersSerializer(
-        result_page, many=True, context={'current_user': request.user})
+        result_page, many=True, context={
+            'current_user': request.user, 'request': request
+        })
     return paginator.get_paginated_response(serializer.data)
 
 
