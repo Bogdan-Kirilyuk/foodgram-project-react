@@ -155,7 +155,7 @@ class ShowFollowersSerializer(serializers.ModelSerializer):
                   'last_name', 'is_subscribed', 'recipes', 'recipes_count')
 
     def count_author_recipes(self, user):
-        return user.recipes.count()
+        return Recipe.objects.filter(author=user.author).count()
 
     def check_if_subscribed(self, user):
         current_user = self.context.get('current_user')
