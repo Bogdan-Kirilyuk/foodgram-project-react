@@ -146,7 +146,7 @@ class ShowFollowerRecipeSerializer(serializers.ModelSerializer):
 
 class ShowFollowersSerializer(serializers.ModelSerializer):
     # recipes = serializers.SerializerMethodField('recipes_limit_followers')
-    recipes = ShowFollowerRecipeSerializer()
+    recipes = ShowFollowerRecipeSerializer(many=True, read_only=True)
     recipes_count = serializers.SerializerMethodField('count_author_recipes')
     is_subscribed = serializers.SerializerMethodField('check_if_subscribed')
 
