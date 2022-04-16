@@ -219,15 +219,11 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
     def add_ingredient(self, validated_data, recipe):
         ingredients_data = validated_data.pop('ingredients')
         for new_ingredient in ingredients_data:
-            if IngredientInRecipe.objects.filter(
+            IngredientInRecipe.objects.get_or_create(
+                ingredient=Ingredient.objects.get(id=new_ingredient['id']),
                 recipe=recipe,
-                ingredient=new_ingredient['id']
-            ).exists():
-                IngredientInRecipe.objects.get_or_create(
-                    ingredient=Ingredient.objects.get(id=new_ingredient['id']),
-                    recipe=recipe,
-                    amount=new_ingredient['amount']
-                )
+                amount=new_ingredient['amount']
+            )
 
     def create(self, validated_data):
         tags_data = validated_data.pop('tags')
