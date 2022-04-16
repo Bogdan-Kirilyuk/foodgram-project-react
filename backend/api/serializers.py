@@ -145,7 +145,7 @@ class ShowFollowerRecipeSerializer(serializers.ModelSerializer):
 
 
 class ShowFollowersSerializer(serializers.ModelSerializer):
-    recipes = serializers.SerializerMethodField()
+    recipes = serializers.SerializerMethodField('recipes_limit_followers')
     recipes_count = serializers.SerializerMethodField('count_author_recipes')
     is_subscribed = serializers.SerializerMethodField('check_if_subscribed')
 
@@ -154,7 +154,7 @@ class ShowFollowersSerializer(serializers.ModelSerializer):
         fields = ('email', 'id', 'username', 'first_name',
                   'last_name', 'is_subscribed', 'recipes', 'recipes_count')
 
-    def get_recipes(self, user):
+    def recipes_limit_followers(self, user):
         print(user)
         recipes_limit = self.context.get('request').GET.get('recipes_limit')
         if recipes_limit is not None:
