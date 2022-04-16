@@ -132,12 +132,12 @@ class RecipeSerializer(serializers.ModelSerializer):
 
 
 class ShowFollowerRecipeSerializer(serializers.ModelSerializer):
-    image = serializers.ImageField(
-        max_length=None,
-        required=True,
-        allow_empty_file=False,
-        use_url=True,
-    )
+    # image = serializers.ImageField(
+    #     max_length=None,
+    #     required=True,
+    #     allow_empty_file=False,
+    #     use_url=True,
+    # )
 
     class Meta:
         model = Recipe
@@ -145,7 +145,7 @@ class ShowFollowerRecipeSerializer(serializers.ModelSerializer):
 
 
 class ShowFollowersSerializer(serializers.ModelSerializer):
-    recipes = ShowFollowerRecipeSerializer(many=True, read_only=True)
+    recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField('count_author_recipes')
     is_subscribed = serializers.SerializerMethodField('check_if_subscribed')
 
@@ -153,6 +153,17 @@ class ShowFollowersSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ('email', 'id', 'username', 'first_name',
                   'last_name', 'is_subscribed', 'recipes', 'recipes_count')
+
+    def get_recipes(self, user):
+        recipes_limit = self.context.get(
+            'request'
+        ).query_params.get('recipes_limit')
+        if recipes_limit is not None:
+            query = Recipe.objects.filter(author=user)[:int(recipes_limit)]
+        else:
+            query = Recipe.objects.filter(author=user)
+        serializer = ShowFollowerRecipeSerializer(query, many=True)
+        return serializer.data
 
     def count_author_recipes(self, user):
         return user.recipes.count()
